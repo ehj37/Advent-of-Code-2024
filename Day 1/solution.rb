@@ -13,3 +13,12 @@ def pair_and_measure
     distances = zipped_lists.map { |pair| (pair[0] - pair[1]).abs }
     distances.sum
 end
+
+# Part 2 solution
+def calculate_similarity_score
+    right_value_to_count = @right_list.uniq.each_with_object({}) do |i, hash| 
+        hash[i] = @right_list.count(i)
+    end
+
+    @left_list.reduce(0) { |sum, i| sum + i * right_value_to_count[i].to_i }
+end

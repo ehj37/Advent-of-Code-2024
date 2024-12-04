@@ -30,3 +30,26 @@ end
 def part_1
     num_xmas(parse_input('input.txt'))
 end
+
+def num_x_mas(word_search)
+    word_search_w = word_search[0].length
+    word_search_h = word_search.length
+
+    (0..word_search_w - 3).sum do |i|
+        (0..word_search_h - 3).count do |j|
+            sse_diagonal = ''
+            ssw_diagonal = ''
+            (0..2).each do |k|
+                sse_diagonal.concat word_search[j + k][i + k]
+                ssw_diagonal.concat word_search[j + k][i + 2 - k]
+            end
+            [sse_diagonal, ssw_diagonal].all? do |diagonal|
+                diagonal.match?(/MAS/) ||diagonal.reverse.match?(/MAS/)
+            end
+        end
+    end
+end
+
+def part_2
+    num_x_mas(parse_input('input.txt'))
+end

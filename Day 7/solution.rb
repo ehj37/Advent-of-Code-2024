@@ -4,17 +4,24 @@ def parse_input(path)
         .map { |ns| [ns[0], ns[1..]] }
 end
 
-
-def filter_possibly_true(eqs)
+def filter_possibly_true(eqs, operators)
     eqs.filter do |(test_val, ns)|
-        ['*', '+'].repeated_permutation(ns.length - 1).find do |p|
+        operators.repeated_permutation(ns.length - 1).find do |p|
             test_val == ns[1..].each_with_index.reduce(ns.first) do |acc, (n, i)|
-                [acc, n].reduce(p[i].to_sym)
+                if ['*', '+'].include?(p[i])
+                    [acc, n].reduce(p[i].to_sym)
+                else
+                    (acc.to_s + n.to_s).to_i
+                end
             end
         end
     end
 end
 
 def part_1
-    filter_possibly_true(parse_input('input.txt')).map(&:first).sum
+    filter_possibly_true(parse_input('input.txt'), ['+', '*']).map(&:first).sum
+end
+
+def part_2
+    filter_possibly_true(parse_input('input.txt'), ['+', '*', '||']).map(&:first).sum
 end

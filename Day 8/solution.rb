@@ -35,3 +35,24 @@ end
 def part_1
     num_antinode_locs(*parse_input('./input.txt'))
 end
+
+def num_antinode_locs_but_for_real(antennae, city_width, city_height)
+    antenna_groups = antennae.group_by(&:freq).values
+    (0...city_height).flat_map do |y|
+        (0...city_width).filter_map do |x|
+            v = Vector[x, y]
+            v if antenna_groups.any? do |group|
+                group.combination(2).any? do |(a1, a2)|
+                    break true if v == a1.coords || v == a2.coords
+                    to_a1 = (a1.coords - v).normalize.round(6)
+                    to_a2 = (a2.coords - v).normalize.round(6)
+                    to_a1 == to_a2 || to_a1 == -to_a2
+                end
+            end
+        end
+    end.uniq.length
+end
+
+def part_2
+    num_antinode_locs_but_for_real(*parse_input('./input.txt'))
+end

@@ -54,3 +54,42 @@ def part_1
     update_robots!(100, robots, space_w, space_h)
     safety_factor(robots, space_w, space_h)
 end
+
+def puts_state_of_robots(robots, space_w, space_h)
+    lines = []
+    space_h.times do |y|
+        lines.append([])
+        space_w.times do |x|
+            lines[y][x] = ' '
+        end
+    end
+
+    robots.each { |r| lines[r.y][r.x] = '#' }
+    puts lines.map { |l| l.join }.to_a
+end
+
+def update_and_puts_state_of_robots(robots, space_w, space_h)
+    81.times { robots.each { |r| r.update!(space_w, space_h) } }
+    puts_state_of_robots(robots, space_w, space_h)
+    puts "Iteration number: #{81}"
+
+    sleep 0.4
+    
+    update_and_puts_state_of_robots_helper(robots, space_w, space_h, 81)
+end
+
+def update_and_puts_state_of_robots_helper(robots, space_w, space_h, iteration)
+    101.times { robots.each { |r| r.update!(space_w, space_h) } }
+    puts_state_of_robots(robots, space_w, space_h)
+    puts "Iteration number: #{iteration + 101}"
+
+    sleep 0.4
+
+    update_and_puts_state_of_robots_helper(robots, space_w, space_h, iteration + 101)
+end
+
+def part_2
+    robots = parse_input('./input.txt')
+    space_w, space_h = 101, 103
+    update_and_puts_state_of_robots(robots, space_w, space_h)
+end

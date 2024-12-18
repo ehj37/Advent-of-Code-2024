@@ -32,3 +32,10 @@ end
 def part_1
   shortest_path_length(71, parse_input('./input.txt'), 1024)
 end
+
+def part_2
+  byte_coords = parse_input('./input.txt')
+  (1024...byte_coords.length).each do |i|
+    break byte_coords[i] if !shortest_path_length(71, byte_coords, i + 1).finite?
+  end
+end

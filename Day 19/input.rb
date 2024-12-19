@@ -4,22 +4,26 @@ def parse_input(path)
 end
 
 def is_possible?(design, available_patterns)
-  is_possible_helper(design, available_patterns, {})
+  num_ways_to_make(design, available_patterns).nonzero?
 end
 
-def is_possible_helper(remaining_design, available_patterns, cache)
-  return cache[remaining_design] if !cache[remaining_design].nil?
+def num_ways_to_make(design, available_patterns)
+  num_ways_to_make_helper(design, available_patterns, {})
+end
 
-  return true if remaining_design == ''
+def num_ways_to_make_helper(design, available_patterns, cache)
+  return cache[design] if !cache[design].nil?
 
-  next_patterns = available_patterns.filter { |p| remaining_design.start_with?(p) }
+  return 1 if design == ''
+
+  next_patterns = available_patterns.filter { |p| design.start_with?(p) }
   next_patterns.each do |p|
-    next if !cache[remaining_design[p.length...]].nil?
+    next if !cache[design[p.length...]].nil?
 
-    cache[remaining_design[p.length...]] = is_possible_helper(remaining_design[p.length...], available_patterns, cache)
+    cache[design[p.length...]] = num_ways_to_make_helper(design[p.length...], available_patterns, cache)
   end
 
-  next_patterns.any? { |p| cache[remaining_design[p.length...]]}
+  cache[design] = next_patterns.sum { |p| cache[design[p.length...]]}
 end
 
 def num_possible(designs, available_patterns)
@@ -34,4 +38,14 @@ end
 def part_1
   available_patterns, designs = parse_input(File.join(File.dirname(__FILE__), '/input.txt'))
   num_possible(designs, available_patterns)
+end
+
+def example_part_2
+  available_patterns, designs = parse_input(File.join(File.dirname(__FILE__), '/example.txt'))
+  designs.sum { |d| num_ways_to_make(d, available_patterns) }
+end
+
+def part_2
+  available_patterns, designs = parse_input(File.join(File.dirname(__FILE__), '/input.txt'))
+  designs.sum { |d| num_ways_to_make(d, available_patterns) }
 end

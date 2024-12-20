@@ -23,13 +23,15 @@ def coord_to_distance_from_start(course)
     distance_from_start
 end
 
-def num_cheats_saving_n(course, n)
+def num_cheats_saving_n(course, cheat_duration, n)
     track_coords = course.flat_map.with_index { |l, y| l.filter_map.with_index { |s, x| [x, y] if s != '#' } }
     distance_mapping = coord_to_distance_from_start(course)
     cheatless_distance = distance_mapping[track_coords.find { |(x, y)| course[y][x] == 'E' }]
 
     track_coords.sum do |(x, y)|
-        possible_ends = (x - 2..x + 2).to_a.product((y - 2..y + 2).to_a).filter { |(a, b)| (a - x).abs + (b - y).abs <= 2 }
+        possible_ends = (x - cheat_duration..x + cheat_duration).to_a.product((y - cheat_duration..y + cheat_duration).to_a)
+            .filter { |(a, b)| (a - x).abs + (b - y).abs <= cheat_duration }
+
         possible_ends.count do |(a, b)|
             next if distance_mapping[[a, b]].nil?
 
@@ -40,10 +42,15 @@ end
 
 def example_part_1
     course = parse_input(File.join(File.dirname(__FILE__), '/example.txt'))
-    num_cheats_saving_n(course, 64)
+    num_cheats_saving_n(course, 2, 64)
 end
 
 def part_1
     course = parse_input(File.join(File.dirname(__FILE__), '/input.txt'))
-    num_cheats_saving_n(course, 100)
+    num_cheats_saving_n(course, 2, 100)
+end
+
+def part_2
+    course = parse_input(File.join(File.dirname(__FILE__), '/input.txt'))
+    num_cheats_saving_n(course, 20, 100)
 end
